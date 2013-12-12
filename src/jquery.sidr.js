@@ -28,6 +28,11 @@
         return true;
       }
     },
+    //loads the target url in iframe
+    loadInIframe: function($menu,url){
+      $menu.css('overflow-x','hidden');
+      $menu.html('<iframe src="'+url+'" border="0" style="width:100%;height:100%;border:0px;padding:0px;margin:0px"></iframe>');
+    },
     // Loads the content into the menu bar
     loadContent: function($menu, content) {
       $menu.html(content);
@@ -217,9 +222,10 @@
       source        : null,           // Override the source of the content.
       renaming      : true,           // The ids and classes will be prepended with a prefix when loading existent content
       body          : 'body',         // Page container selector,
-      displace: true, // Displace the body content or not
+      displace: true,                 // Displace the body content or not
       onOpen        : function() {},  // Callback when sidr opened
-      onClose       : function() {}   // Callback when sidr closed
+      onClose       : function() {},  // Callback when sidr closed
+      useIframe     : false           // load url in iframe or current DOM
     }, options);
 
     var name = settings.name,
@@ -242,7 +248,8 @@
         body           : settings.body,
         displace      : settings.displace,
         onOpen         : settings.onOpen,
-        onClose        : settings.onClose
+        onClose        : settings.onClose,
+        useIframe       :settings.useIframe
       });
 
     // The menu content
@@ -251,9 +258,14 @@
       privateMethods.loadContent($sideMenu, newContent);
     }
     else if(typeof settings.source === 'string' && privateMethods.isUrl(settings.source)) {
-      $.get(settings.source, function(data) {
-        privateMethods.loadContent($sideMenu, data);
-      });
+      if(settings.useIframe){
+        privateMethods.loadInIframe($sideMenu,settings.source);
+      }
+      else{
+        $.get(settings.source, function(data) {
+          privateMethods.loadContent($sideMenu, data);
+        });
+      }
     }
     else if(typeof settings.source === 'string') {
       var htmlContent = '',
