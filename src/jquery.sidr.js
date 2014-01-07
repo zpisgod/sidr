@@ -30,7 +30,7 @@
     },
     //loads the target url in iframe
     loadInIframe: function($menu,url){
-      $menu.css('overflow-x','hidden');
+      $menu.css('overflow','hidden');
       $menu.html('<iframe src="'+url+'" border="0" style="width:100%;height:100%;border:0px;padding:0px;margin:0px"></iframe>');
     },
     // Loads the content into the menu bar
